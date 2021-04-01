@@ -2,7 +2,7 @@
 # règles : http://fr.wikipedia.org/wiki/Blackjack_(jeu)
 # voici à quoi doit ressembler le jeu : https://gyazo.com/7b1e9c4517ae5b6f9da99c2944236e1a
 
-from random import randrange
+from random import randrange, shuffle
 from tkinter import *
 from time import sleep
 
@@ -13,7 +13,15 @@ valeur = ('as', '2', '3', '4', '5', '6', '7',
 
 # TODO calculer la main du croupier ou du joueur en fonction des cartes tirées par l'un ou l'autre
 def calculer_main(cartes):
-    pass
+    score = 0
+    for carte in cartes:
+        if len(carte.valeur) > 2:
+            score += 10
+        elif carte.valeur == 'as':
+            score += (1 if score > 10 else 11)
+        else:
+            score += int(carte.valeur)
+    return score
 
 
 class Carte:  # la classe Carte, c'est cadeau
@@ -35,9 +43,11 @@ class Joueur:
 
     def ajouter(self, c):
         # TODO Ajouter la carte c à sa main
+        self.main.append(c)
 
     def total(self):
         # TODO Calculer le total des points de la main
+        return calculer_main(self.main)
 
     def nb_cartes(self):
         return len(self.main)
@@ -52,13 +62,19 @@ class Paquet_de_cartes:
     def __init__(self):
         # TODO Construction de la liste des 52 cartes en utilisant la classe Carte(valeur,couleur)
         self.cartes = []
+        for color in couleur:
+            for value in valeur:
+                self.cartes.append(Carte())
 
     def melanger(self):
         # TODO Mélanger les cartes
+        self.cartes = shuffle(self.cartes)
 
     def tirer(self):
         # TODO Tirer la première carte de la pile et la retirer du tableau des cartes pour qu'elle ne soit plus tirée
-        return
+        tirage = self.cartes.pop(0)
+
+        return tirage
 
 
 def reinit():
@@ -74,10 +90,14 @@ def reinit():
     # TODO mélanger les cartes et tirer 1 carte pour le croupier puis 2 pour le joueur
     # TODO attention à bien mettre à jour les mains de chaque joueurs + calculer les scores + afficher les cartes et le resultat dans la fenêtre TK Inter
 
+    
+
     can.update()
 
     # TODO verifier si j'ai fait un blackjack pour savoir si j'ai gagné la partie
     # TODO afficher un message "gagné du côté de mon côté" puis réinitialiser la partie après 3 secondes
+
+    if mon_score == 21:
 
 
 def hit():  # le joueur tire une carte
